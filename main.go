@@ -1,20 +1,76 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/renaldyhidayatt/blogGoEnt/middlewares"
+	"github.com/renaldyhidayatt/blogGoEnt/routes"
+	"github.com/renaldyhidayatt/blogGoEnt/utils"
+	"github.com/spf13/viper"
 )
 
 func main() {
+	ctx := context.Background()
+	err := utils.Viper()
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	db, err := utils.Database(ctx)
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
+	r.Use(middlewares.MiddlewareCors)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello World"))
 	})
 
-	http.ListenAndServe(":5000", r)
+	routes.NewAuthRoutes("/auth", db, r, ctx)
+	routes.NewCategoryRoutes("/category", db, r, ctx)
+	routes.NewPostRoutes("/posts", db, r, ctx)
+	routes.NewUserRoutes("/users", db, r, ctx)
+
+	serve := &http.Server{
+		Addr:         fmt.Sprintf(":%s", viper.GetString("PORT")),
+		WriteTimeout: 120 * 10,
+		ReadTimeout:  120 * 10,
+		IdleTimeout:  time.Second * 60,
+		Handler:      r,
+	}
+
+	go func() {
+		err := serve.ListenAndServe()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	log.Println("Connected to port:", viper.GetString("PORT"))
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
+	<-c
+
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	serve.Shutdown(ctx)
+	os.Exit(0)
 }
