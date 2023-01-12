@@ -42,7 +42,9 @@ func (h *categoryHandler) FindById(w http.ResponseWriter, r *http.Request) {
 		response.ResponseError(w, http.StatusBadRequest, err)
 	}
 
-	response.ResponseMessage(w, "Berhasil mendapatkan data", res, http.StatusOK)
+	responseCategpry := response.ResponseCategory(res)
+
+	response.ResponseMessage(w, "Berhasil mendapatkan data", responseCategpry, http.StatusOK)
 }
 
 func (h *categoryHandler) Create(w http.ResponseWriter, r *http.Request) {

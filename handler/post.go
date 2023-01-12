@@ -42,7 +42,9 @@ func (h *postHandler) FindById(w http.ResponseWriter, r *http.Request) {
 		response.ResponseError(w, http.StatusBadRequest, err)
 	}
 
-	response.ResponseMessage(w, "Berhasil mendapatkan data", res, http.StatusOK)
+	responsePost := response.ResponsePost(res)
+
+	response.ResponseMessage(w, "Berhasil mendapatkan data", responsePost, http.StatusOK)
 }
 
 func (h *postHandler) Create(w http.ResponseWriter, r *http.Request) {
@@ -54,8 +56,13 @@ func (h *postHandler) Create(w http.ResponseWriter, r *http.Request) {
 	postRequest.Slug = r.FormValue("slug")
 	postRequest.Image = fileupload.FileUpload(w, r)
 	postRequest.Body = r.FormValue("body")
+	categoryId, err := strconv.Atoi(r.FormValue("category_id"))
+	if err != nil {
+		response.ResponseError(w, http.StatusBadRequest, err)
+	}
+	postRequest.CategoryId = categoryId
 
-	err := postRequest.Validate()
+	err = postRequest.Validate()
 
 	if err != nil {
 		response.ResponseError(w, http.StatusBadRequest, err)

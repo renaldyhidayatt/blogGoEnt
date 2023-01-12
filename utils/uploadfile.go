@@ -32,8 +32,9 @@ func (l *locationUpload) FileUpload(w http.ResponseWriter, r *http.Request) stri
 	if err != nil {
 		response.ResponseError(w, http.StatusInternalServerError, err)
 	}
+	location := fmt.Sprintf("images/%s", l.location)
 
-	folderLocation := filepath.Join(dir, "images/%s", l.location)
+	folderLocation := filepath.Join(dir, location)
 
 	if _, err := os.Stat(folderLocation); os.IsNotExist(err) {
 		os.MkdirAll(folderLocation, 0700)
