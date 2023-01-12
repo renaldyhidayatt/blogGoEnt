@@ -36,6 +36,7 @@ func (s *postService) Create(input request.PostRequest) (*ent.Post, error) {
 	postRequest.Slug = input.Slug
 	postRequest.Image = input.Image
 	postRequest.Body = input.Body
+	postRequest.CategoryId = input.CategoryId
 
 	res, err := s.repository.Create(postRequest)
 
@@ -49,6 +50,7 @@ func (s *postService) UpdateById(id int, input request.PostRequest) (*ent.Post, 
 	postRequest.Slug = input.Slug
 	postRequest.Image = input.Image
 	postRequest.Body = input.Body
+	postRequest.CategoryId = input.CategoryId
 
 	res, err := s.repository.FindById(id)
 

@@ -46,11 +46,12 @@ func main() {
 	routes.NewUserRoutes("/users", db, r, ctx)
 
 	serve := &http.Server{
-		Addr:         fmt.Sprintf(":%s", viper.GetString("PORT")),
-		WriteTimeout: 120 * 10,
-		ReadTimeout:  120 * 10,
-		IdleTimeout:  time.Second * 60,
-		Handler:      r,
+		Addr:           fmt.Sprintf(":%s", viper.GetString("PORT")),
+		ReadTimeout:    time.Duration(time.Second) * 60,
+		WriteTimeout:   time.Duration(time.Second) * 30,
+		IdleTimeout:    time.Duration(time.Second) * 120,
+		MaxHeaderBytes: 3145728,
+		Handler:        r,
 	}
 
 	go func() {
@@ -68,7 +69,7 @@ func main() {
 
 	<-c
 
-	ctx, cancel := context.WithCancel(ctx)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	serve.Shutdown(ctx)

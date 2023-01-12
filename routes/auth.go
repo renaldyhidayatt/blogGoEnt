@@ -2,6 +2,7 @@ package routes
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/renaldyhidayatt/blogGoEnt/ent"
@@ -17,6 +18,9 @@ func NewAuthRoutes(prefix string, db *ent.Client, router *chi.Mux, context conte
 	handler := handler.NewAuthHandler(service)
 
 	router.Route(prefix, func(r chi.Router) {
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("Hello"))
+		})
 		r.Post("/login", handler.LoginUser)
 		r.Post("/register", handler.RegisterUser)
 	})

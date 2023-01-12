@@ -3,10 +3,11 @@ package request
 import "errors"
 
 type PostRequest struct {
-	Title string `json:"title"`
-	Slug  string `json:"slug"`
-	Image string `json:"img"`
-	Body  string `json:"body"`
+	Title      string `json:"title"`
+	Slug       string `json:"slug"`
+	Image      string `json:"img"`
+	Body       string `json:"body"`
+	CategoryId int    `json:"category_id"`
 }
 
 func (p *PostRequest) Validate() error {

@@ -19,9 +19,9 @@ func NewPostRoutes(prefix string, db *ent.Client, router *chi.Mux, context conte
 	router.Route(prefix, func(r chi.Router) {
 		r.Use(middlewares.MiddlewareAuthentication)
 		r.Get("/", handler.FindAll)
-		r.Get("/:id", handler.FindById)
+		r.Get("/{id:[0-9]+}", handler.FindById)
 		r.Post("/", handler.Create)
-		r.Put("/:id", handler.UpdateById)
-		r.Delete("/:id", handler.DeleteById)
+		r.Put("/{id:[0-9]+}", handler.UpdateById)
+		r.Delete("/{id:[0-9]+}", handler.DeleteById)
 	})
 }

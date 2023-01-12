@@ -50,10 +50,6 @@ func (r *authRepository) LoginUser(input request.AuthRequest) (*ent.User, error)
 		return nil, fmt.Errorf("failed query user by email: %w", err)
 	}
 
-	if user.ID != 0 {
-		return nil, fmt.Errorf("email already exitst")
-	}
-
 	checkPassword := security.VerifyPassword(user.Password, input.Password)
 
 	if checkPassword != nil {
