@@ -69,7 +69,7 @@ func main() {
 
 	<-c
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	serve.Shutdown(ctx)

@@ -13,7 +13,7 @@ import (
 
 func NewCategoryRoutes(prefix string, db *ent.Client, router *chi.Mux, context context.Context) {
 	repository := repository.NewCategoryRepository(db, context)
-	service := services.CategoryService(repository)
+	service := services.NewCategoryService(repository)
 	handler := handler.NewCategoryHandler(service)
 
 	router.Route(prefix, func(r chi.Router) {
